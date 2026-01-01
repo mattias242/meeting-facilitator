@@ -1,8 +1,8 @@
 """WebSocket connection manager for real-time meeting updates."""
 
-from typing import Dict, List
-from fastapi import WebSocket
 import json
+
+from fastapi import WebSocket
 
 
 class WebSocketManager:
@@ -10,7 +10,7 @@ class WebSocketManager:
 
     def __init__(self) -> None:
         # Map meeting_id -> list of active connections
-        self.active_connections: Dict[str, List[WebSocket]] = {}
+        self.active_connections: dict[str, list[WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, meeting_id: str) -> None:
         """Accept WebSocket connection and subscribe to meeting."""

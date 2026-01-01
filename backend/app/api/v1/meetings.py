@@ -1,23 +1,24 @@
 """Meetings API endpoints."""
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Dict, Any
 
 from app.db.session import get_db
-from app.schemas.meeting import MeetingCreate, MeetingResponse
 from app.models.meeting import Meeting
-from app.services.idoarrt_service import IDOARRTService, IDOARRTParseError
+from app.schemas.meeting import MeetingCreate, MeetingResponse
+from app.services.idoarrt_service import IDOARRTParseError, IDOARRTService
 
 router = APIRouter()
 idoarrt_service = IDOARRTService()
 
 
-@router.post("/meetings", response_model=Dict[str, Any])
+@router.post("/meetings", response_model=dict[str, Any])
 async def create_meeting(
     meeting_data: MeetingCreate,
     db: Session = Depends(get_db)
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Create a new meeting from IDOARRT markdown.
 
@@ -79,7 +80,9 @@ async def create_meeting(
             "parsed_idoarrt": None,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Internal server error: {str(e)}"
+        ) from e
 
 
 @router.get("/meetings/{meeting_id}", response_model=MeetingResponse)
@@ -98,7 +101,7 @@ async def get_meeting(
 async def start_meeting(
     meeting_id: str,
     db: Session = Depends(get_db)
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Start a meeting."""
     from datetime import datetime
 
@@ -109,8 +112,8 @@ async def start_meeting(
     if meeting.status != "preparation":
         raise HTTPException(status_code=400, detail="Meeting already started or completed")
 
-    meeting.status = "active"
-    meeting.started_at = datetime.utcnow()
+    meeting.status = "active"  # type: ignore[assignment]
+    meeting.started_at = datetime.utcnow()  # type: ignore[assignment]
     db.commit()
     db.refresh(meeting)
 
@@ -125,7 +128,7 @@ async def start_meeting(
 async def end_meeting(
     meeting_id: str,
     db: Session = Depends(get_db)
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """End a meeting."""
     from datetime import datetime
 
@@ -136,8 +139,8 @@ async def end_meeting(
     if meeting.status != "active":
         raise HTTPException(status_code=400, detail="Meeting not active")
 
-    meeting.status = "completed"
-    meeting.ended_at = datetime.utcnow()
+    meeting.status = "completed"  # type: ignore[assignment]
+    meeting.ended_at = datetime.utcnow()  # type: ignore[assignment]
     db.commit()
     db.refresh(meeting)
 
@@ -153,7 +156,7 @@ async def extend_meeting(
     meeting_id: str,
     seconds: int,
     db: Session = Depends(get_db)
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Extend meeting time."""
     meeting = db.query(Meeting).filter(Meeting.id == meeting_id).first()
     if not meeting:
@@ -162,7 +165,7 @@ async def extend_meeting(
     if meeting.status != "active":
         raise HTTPException(status_code=400, detail="Meeting not active")
 
-    meeting.time_extensions_seconds += seconds
+    meeting.time_extensions_seconds += seconds  # type: ignore[assignment]
     db.commit()
     db.refresh(meeting)
 

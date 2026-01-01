@@ -1,10 +1,21 @@
 """Meeting database models."""
 
-from datetime import datetime
-from typing import List
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Column, String, Text, Integer, DateTime, JSON, Float, LargeBinary, Boolean, ForeignKey, Index
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    LargeBinary,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 from app.db.session import Base
@@ -34,9 +45,15 @@ class Meeting(Base):
     time_extensions_seconds = Column(Integer, default=0, nullable=False)
 
     # Relationships
-    audio_chunks = relationship("AudioChunk", back_populates="meeting", cascade="all, delete-orphan")
-    interventions = relationship("Intervention", back_populates="meeting", cascade="all, delete-orphan")
-    protocol = relationship("Protocol", back_populates="meeting", uselist=False, cascade="all, delete-orphan")
+    audio_chunks = relationship(
+        "AudioChunk", back_populates="meeting", cascade="all, delete-orphan"
+    )
+    interventions = relationship(
+        "Intervention", back_populates="meeting", cascade="all, delete-orphan"
+    )
+    protocol = relationship(
+        "Protocol", back_populates="meeting", uselist=False, cascade="all, delete-orphan"
+    )
 
 
 class AudioChunk(Base):
@@ -75,7 +92,8 @@ class Intervention(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     # Intervention details
-    intervention_type = Column(String, nullable=False)  # time_warning|goal_deviation|perspective_gap|complexity_mistake
+    # Types: time_warning|goal_deviation|perspective_gap|complexity_mistake
+    intervention_type = Column(String, nullable=False)
     trigger_context = Column(JSON, nullable=True)  # What triggered this intervention
 
     # Assistant output

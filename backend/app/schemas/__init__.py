@@ -1,12 +1,12 @@
 """Pydantic schemas."""
 
 from app.schemas.meeting import (
+    AudioChunkUpload,
     IDOARRTData,
+    InterventionResponse,
     MeetingCreate,
     MeetingResponse,
     MeetingUpdate,
-    AudioChunkUpload,
-    InterventionResponse,
     ProtocolResponse,
 )
 

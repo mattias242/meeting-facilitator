@@ -1,8 +1,9 @@
 """Pydantic schemas for meetings and related entities."""
 
 from datetime import datetime
-from typing import List, Dict, Any, Optional
-from pydantic import BaseModel, Field
+from typing import Any
+
+from pydantic import BaseModel
 
 
 class AgendaItem(BaseModel):
@@ -14,10 +15,10 @@ class AgendaItem(BaseModel):
 class IDOARRTData(BaseModel):
     """Parsed IDOARRT data."""
     intent: str
-    desired_outcomes: List[str]
-    agenda: List[AgendaItem]
-    roles: Dict[str, str]
-    rules: List[str]
+    desired_outcomes: list[str]
+    agenda: list[AgendaItem]
+    roles: dict[str, str]
+    rules: list[str]
     total_duration_minutes: int
 
 
@@ -31,14 +32,14 @@ class MeetingResponse(BaseModel):
     id: str
     created_at: datetime
     intent: str
-    desired_outcomes: List[str]
-    agenda: List[Dict[str, Any]]
-    roles: Dict[str, str]
-    rules: List[str]
+    desired_outcomes: list[str]
+    agenda: list[dict[str, Any]]
+    roles: dict[str, str]
+    rules: list[str]
     total_duration_minutes: int
     status: str
-    started_at: Optional[datetime] = None
-    ended_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    ended_at: datetime | None = None
     time_extensions_seconds: int
 
     class Config:
@@ -47,8 +48,8 @@ class MeetingResponse(BaseModel):
 
 class MeetingUpdate(BaseModel):
     """Update meeting status."""
-    status: Optional[str] = None
-    time_extensions_seconds: Optional[int] = None
+    status: str | None = None
+    time_extensions_seconds: int | None = None
 
 
 class AudioChunkUpload(BaseModel):
@@ -62,9 +63,9 @@ class InterventionResponse(BaseModel):
     id: str
     created_at: datetime
     intervention_type: str
-    question: Optional[str] = None
-    coaching_note: Optional[str] = None
-    trigger_context: Optional[Dict[str, Any]] = None
+    question: str | None = None
+    coaching_note: str | None = None
+    trigger_context: dict[str, Any] | None = None
 
     class Config:
         from_attributes = True
@@ -75,10 +76,10 @@ class ProtocolResponse(BaseModel):
     id: str
     created_at: datetime
     full_transcription: str
-    agenda_summary: Optional[Dict[str, Any]] = None
-    goal_assessment: Optional[Dict[str, Any]] = None
-    key_decisions: Optional[List[str]] = None
-    action_items: Optional[List[Dict[str, str]]] = None
+    agenda_summary: dict[str, Any] | None = None
+    goal_assessment: dict[str, Any] | None = None
+    key_decisions: list[str] | None = None
+    action_items: list[dict[str, str]] | None = None
     markdown_content: str
 
     class Config:

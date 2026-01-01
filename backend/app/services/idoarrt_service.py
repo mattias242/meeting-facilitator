@@ -1,7 +1,7 @@
 """IDOARRT markdown parsing and validation service."""
 
 import re
-from typing import Dict, List, Any, Tuple
+from typing import Any
 
 
 class IDOARRTParseError(Exception):
@@ -14,7 +14,7 @@ class IDOARRTService:
 
     REQUIRED_SECTIONS = ["Intent", "Desired Outcomes", "Agenda", "Roles", "Rules", "Time"]
 
-    def parse_idoarrt(self, markdown: str) -> Dict[str, Any]:
+    def parse_idoarrt(self, markdown: str) -> dict[str, Any]:
         """
         Parse IDOARRT markdown into structured data.
 
@@ -44,13 +44,14 @@ class IDOARRTService:
             rules = self._parse_rules(sections["Rules"])
             total_duration_minutes = self._parse_time(sections["Time"])
         except Exception as e:
-            raise IDOARRTParseError(f"Parsing error: {str(e)}")
+            raise IDOARRTParseError(f"Parsing error: {str(e)}") from e
 
         # Validate agenda time allocations
         agenda_total = sum(item["duration_minutes"] for item in agenda)
         if agenda_total != total_duration_minutes:
             raise IDOARRTParseError(
-                f"Agenda times ({agenda_total} min) don't match total time ({total_duration_minutes} min)"
+                f"Agenda times ({agenda_total} min) don't match total time "
+                f"({total_duration_minutes} min)"
             )
 
         return {
@@ -62,11 +63,11 @@ class IDOARRTService:
             "total_duration_minutes": total_duration_minutes,
         }
 
-    def _split_sections(self, markdown: str) -> Dict[str, str]:
+    def _split_sections(self, markdown: str) -> dict[str, str]:
         """Split markdown into sections based on # headers."""
-        sections: Dict[str, str] = {}
+        sections: dict[str, str] = {}
         current_section: str | None = None
-        current_content: List[str] = []
+        current_content: list[str] = []
 
         for line in markdown.split("\n"):
             # Check if line is a header
@@ -95,7 +96,7 @@ class IDOARRTService:
             raise IDOARRTParseError("Intent cannot be empty")
         return intent
 
-    def _parse_desired_outcomes(self, content: str) -> List[str]:
+    def _parse_desired_outcomes(self, content: str) -> list[str]:
         """Parse Desired Outcomes section (bullet list)."""
         outcomes = []
         for line in content.split("\n"):
@@ -110,7 +111,7 @@ class IDOARRTService:
 
         return outcomes
 
-    def _parse_agenda(self, content: str) -> List[Dict[str, Any]]:
+    def _parse_agenda(self, content: str) -> list[dict[str, Any]]:
         """
         Parse Agenda section (numbered list with time allocations).
 
@@ -154,7 +155,7 @@ class IDOARRTService:
 
         return agenda
 
-    def _parse_roles(self, content: str) -> Dict[str, str]:
+    def _parse_roles(self, content: str) -> dict[str, str]:
         """
         Parse Roles section (bullet list with role: person).
 
@@ -178,7 +179,7 @@ class IDOARRTService:
 
         return roles
 
-    def _parse_rules(self, content: str) -> List[str]:
+    def _parse_rules(self, content: str) -> list[str]:
         """Parse Rules section (bullet list)."""
         rules = []
         for line in content.split("\n"):
@@ -210,7 +211,7 @@ class IDOARRTService:
 
         raise IDOARRTParseError("Time section must contain 'Total: XX minutes'")
 
-    def validate_idoarrt(self, parsed_data: Dict[str, Any]) -> List[str]:
+    def validate_idoarrt(self, parsed_data: dict[str, Any]) -> list[str]:
         """
         Validate parsed IDOARRT data and return list of validation errors.
 
@@ -249,7 +250,8 @@ class IDOARRTService:
             errors.append("At least one Rule is required")
 
         # Time validation
-        if not parsed_data.get("total_duration_minutes") or parsed_data["total_duration_minutes"] <= 0:
+        total_duration = parsed_data.get("total_duration_minutes")
+        if not total_duration or total_duration <= 0:
             errors.append("Total time must be positive")
 
         return errors

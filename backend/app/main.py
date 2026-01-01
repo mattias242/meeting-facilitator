@@ -3,9 +3,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1 import audio, meetings, protocols
 from app.core.websocket import WebSocketManager
-from app.api.v1 import meetings, audio, protocols
-from app.db.session import engine, Base
+from app.db.session import Base, engine
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
