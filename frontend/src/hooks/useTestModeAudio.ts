@@ -63,14 +63,15 @@ export function useTestModeAudio(
         setAudioBuffer(buffer)
 
         // Calculate total chunks
-        const chunkDurationSeconds = config.chunkDurationMinutes * 60
+        const chunkDurationMinutes = config.chunkDurationMinutes || 2
+        const chunkDurationSeconds = chunkDurationMinutes * 60
         const totalDuration = buffer.duration
         const chunks = Math.ceil(totalDuration / chunkDurationSeconds)
         setTotalChunks(chunks)
         setCurrentChunkNumber(0)
         setIsComplete(false)
 
-        console.log(`Test mode: Loaded audio file (${totalDuration.toFixed(1)}s) - ${chunks} chunks of ${config.chunkDurationMinutes}min each`)
+        console.log(`Test mode: Loaded audio file (${totalDuration.toFixed(1)}s) - ${chunks} chunks of ${chunkDurationMinutes}min each`)
       } catch (err) {
         console.error('Failed to load audio file:', err)
         setError('Kunde inte ladda ljudfilen. Kontrollera att det är en giltig ljudfil.')
@@ -85,7 +86,8 @@ export function useTestModeAudio(
     if (!audioBuffer || !config) return null
 
     try {
-      const chunkDurationSeconds = config.chunkDurationMinutes * 60
+      const chunkDurationMinutes = config.chunkDurationMinutes || 2
+      const chunkDurationSeconds = chunkDurationMinutes * 60
       const startTime = chunkIndex * chunkDurationSeconds
       const endTime = Math.min(startTime + chunkDurationSeconds, audioBuffer.duration)
       const actualDuration = endTime - startTime
@@ -143,7 +145,8 @@ export function useTestModeAudio(
         return
       }
 
-      const chunkDurationSeconds = config.chunkDurationMinutes * 60
+      const chunkDurationMinutes = config.chunkDurationMinutes || 2
+      const chunkDurationSeconds = chunkDurationMinutes * 60
 
       console.log(`Sending test chunk ${currentChunkNumber + 1}/${totalChunks}`)
 

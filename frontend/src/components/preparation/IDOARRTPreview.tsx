@@ -29,7 +29,7 @@ export default function IDOARRTPreview({
         state: {
           testMode: testAudioFile ? {
             audioFile: testAudioFile,
-            chunkDuration: testChunkDuration || 2
+            chunkDurationMinutes: testChunkDuration || 2
           } : null
         }
       })
