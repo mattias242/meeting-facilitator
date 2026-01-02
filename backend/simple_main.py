@@ -3,12 +3,22 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Import logging configuration
+from app.core.logging_config import setup_logging
+
+# Setup logging
+setup_logging()
+
 # Create simple app
 app = FastAPI(
     title="Meeting Facilitator API",
     description="Simple version for testing",
     version="0.1.0-simple",
 )
+
+# Add logging middleware
+from app.core.logging_middleware import LoggingMiddleware
+app.add_middleware(LoggingMiddleware)
 
 # CORS middleware
 app.add_middleware(
