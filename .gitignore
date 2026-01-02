@@ -62,4 +62,4 @@ node_modules/
 .claude/plans/
 
 # Test files (IDOARRT markdown files for testing)
-test/*.md
+test/
