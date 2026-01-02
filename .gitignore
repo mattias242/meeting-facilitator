@@ -60,3 +60,6 @@ node_modules/
 
 # Plan files (generated during development)
 .claude/plans/
+
+# Test files (IDOARRT markdown files for testing)
+test/*.md
