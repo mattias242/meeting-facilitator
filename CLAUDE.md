@@ -163,6 +163,27 @@ npm run test:coverage           # With coverage
 pytest tests/test_services/test_idoarrt_service.py::TestIDOARRTService::test_parse_valid_idoarrt_success -v
 ```
 
+### Logging Commands
+```bash
+# Backend - View logs in real-time
+cd backend
+tail -f logs/app.log              # General application logs
+tail -f logs/errors.log           # Error logs only
+tail -f logs/api.log              # API request logs
+tail -f logs/security.log         # Security events
+tail -f logs/audio.log            # Audio processing logs
+
+# Backend - Search logs
+grep "ERROR" logs/app.log
+grep "meeting_id" logs/api.log
+grep "SECURITY_EVENT" logs/security.log
+
+# Frontend - Access logs (browser console)
+window.logger.getLogs()            # Recent logs in memory
+window.logger.exportLogs()         # Download all logs
+window.logger.clearLogs()           # Clear all logs
+```
+
 ### Git Commands
 ```bash
 # Always stay on main
@@ -192,6 +213,31 @@ git push origin main
 - **No branches**: All work in main branch
 - **Continuous integration**: Every commit validated
 - **Always deployable**: Main is always production-ready
+
+### 📊 Logging Strategy
+- **Local files first**: All logs stored locally in `logs/` directory
+- **Multi-file separation**: Different log files for different concerns
+- **Real-time monitoring**: Use `tail -f` for live log viewing
+- **Frontend persistence**: Browser logs stored in localStorage
+- **Future log service**: Planned integration with cloud logging services
+
+### 📁 Current Log Files
+```
+backend/logs/
+├── app.log          # General application logs
+├── errors.log       # Error and exception logs
+├── security.log     # Authentication events
+├── api.log          # HTTP request/response logs
+├── audio.log        # Audio processing events
+└── claude.log       # Claude API interactions
+
+# Frontend logs (localStorage + browser console)
+- User actions and interactions
+- API requests and responses
+- Audio recording events
+- WebSocket connections
+- Error tracking
+```
 
 ## Key Concepts
 
@@ -386,6 +432,8 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [ ] Enhanced error handling
 - [ ] Audit logging system
 - [ ] Production deployment guide
+- [ ] Log service integration (cloud logging)
+- [ ] Log rotation and retention policies
 
 ### Phase 3 - Advanced Features (1-2 months)
 - [ ] Multi-language support
@@ -393,6 +441,8 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [ ] Voice synthesis
 - [ ] Advanced analytics
 - [ ] Enterprise security features
+- [ ] Centralized log management
+- [ ] Real-time log monitoring dashboard
 
 ### 🌲 Pure Trunk-Based Workflow
 - **Main branch only**: All work happens in main
@@ -407,3 +457,46 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - Code coverage > 80%
 - No critical vulnerabilities
 - Pure trunk-based: No branches, direct commits only
+- Log monitoring: Check logs for errors and performance issues
+
+## 🔧 Monitoring & Debugging
+
+### 📊 Local Logging (Current)
+- **File-based**: All logs stored in `backend/logs/`
+- **Real-time**: Use `tail -f logs/*.log` for live monitoring
+- **Searchable**: `grep`, `awk`, `sed` for log analysis
+- **Frontend**: Browser console + localStorage persistence
+
+### 🚀 Future Log Service Integration
+Planned support for cloud logging services:
+- **ELK Stack** (Elasticsearch, Logstash, Kibana)
+- **Datadog** - Application monitoring and log analysis
+- **Papertrail** - Simple cloud logging
+- **AWS CloudWatch** - AWS-native logging
+- **Google Cloud Logging** - GCP logging service
+
+### 📈 Log Analysis Tools
+```bash
+# Current local tools
+tail -f logs/app.log              # Real-time monitoring
+grep "ERROR" logs/*.log           # Error detection
+awk '{print $1, $7}' logs/api.log   # Extract timing data
+wc -l logs/*.log                  # Log volume analysis
+
+# Future cloud service integration
+# ELK: Kibana dashboards for log visualization
+# Datadog: APM integration with traces
+# CloudWatch: Metrics and alarms
+```
+
+### 🐛 Troubleshooting with Logs
+```bash
+# Backend issues
+tail -f logs/errors.log           # Check for errors
+grep "meeting_id" logs/api.log     # Trace specific meeting
+grep "SECURITY_EVENT" logs/security.log  # Security issues
+
+# Frontend issues
+window.logger.getLogs()            # Recent browser logs
+window.logger.exportLogs()         # Download for analysis
+```
