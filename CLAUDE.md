@@ -122,13 +122,46 @@ cp frontend/.env.example frontend/.env
 
 ## Development Workflow
 
+### Git Workflow (Trunk-Based Development)
+```
+main (trunk) ────────────────────────┐
+                                      │
+feature/security-hardening ──────────┘
+```
+
+**Branch Strategy**:
+- **main**: Always production-ready, short-lived branches
+- **feature/***: Feature branches merged frequently
+- **No long-lived branches**: Everything merges back to main quickly
+
 ### Normal Development
 1. **Setup environment**: Configure `.env` files with security keys
-2. **Start backend**: `cd backend && source venv/bin/activate && uvicorn app.main:app --reload`
-3. **Start frontend**: `cd frontend && npm run dev`
-4. **Access app**: http://localhost:5173
-5. **API docs**: http://localhost:8000/docs
-6. **Login**: Get JWT token via `/api/v1/auth/login`
+2. **Create feature branch**: `git checkout -b feature/your-feature`
+3. **Start backend**: `cd backend && source venv/bin/activate && uvicorn app.main:app --reload`
+4. **Start frontend**: `cd frontend && npm run dev`
+5. **Access app**: http://localhost:5173
+6. **API docs**: http://localhost:8000/docs
+7. **Login**: Get JWT token via `/api/v1/auth/login`
+8. **Test frequently**: Run TDD tests before commits
+9. **Merge to main**: Small, frequent merges
+
+### Testing Commands
+```bash
+# Backend
+cd backend
+pytest                          # Run all tests
+pytest tests/test_services/      # Service tests only
+pytest --cov=app                # With coverage
+
+# Frontend  
+cd frontend
+npm test                         # Run all tests
+npm run test:ui                 # Interactive UI
+npm run test:coverage           # With coverage
+
+# TDD Workflow
+pytest tests/test_services/test_idoarrt_service.py::TestIDOARRTService::test_parse_valid_idoarrt_success -v
+```
 
 ### Testing a Complete Meeting Flow
 1. Upload IDOARRT markdown file
@@ -137,6 +170,24 @@ cp frontend/.env.example frontend/.env
 4. Observe transcriptions and interventions in real-time
 5. End meeting
 6. Review protocol
+
+### Branch Management
+```bash
+# List branches
+git branch -a
+
+# Switch to feature branch
+git checkout feature/security-hardening
+
+# Sync with main
+git checkout main
+git pull origin main
+git checkout feature/security-hardening
+git merge main
+
+# Delete merged branches
+git branch -d feature/completed-feature
+```
 
 ## Key Concepts
 
@@ -323,6 +374,7 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [x] Authentication system implemented
 - [x] Database encryption deployed
 - [x] TDD framework established
+- [x] Trunk-based development workflow
 
 ### Phase 2 - Production Hardening (Next 2-4 weeks)
 - [ ] Rate limiting implementation
@@ -338,8 +390,15 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [ ] Advanced analytics
 - [ ] Enterprise security features
 
+### 🌲 Git Workflow
+- **Main branch**: Always production-ready
+- **Feature branches**: Short-lived, frequently merged
+- **TDD integration**: Tests before features
+- **Continuous integration**: Automated testing on push
+
 ### 📋 Quality Gates
-- All tests must pass before deployment
+- All tests must pass before merge to main
 - Security scan must be clean
 - Code coverage > 80%
 - No critical vulnerabilities
+- Trunk-based: No long-lived branches
