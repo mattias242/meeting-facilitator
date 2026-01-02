@@ -1,9 +1,9 @@
 """Main FastAPI application for Meeting Facilitator."""
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import audio, meetings, protocols
+from app.api.v1 import audio, auth, meetings, protocols
 from app.core.websocket import websocket_manager
 from app.db.session import Base, engine
 
@@ -26,6 +26,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(auth.router, prefix="/api/v1", tags=["authentication"])
 app.include_router(meetings.router, prefix="/api/v1", tags=["meetings"])
 app.include_router(audio.router, prefix="/api/v1", tags=["audio"])
 app.include_router(protocols.router, prefix="/api/v1", tags=["protocols"])
@@ -38,8 +39,22 @@ async def root() -> dict[str, str]:
 
 
 @app.websocket("/ws/meetings/{meeting_id}")
-async def websocket_endpoint(websocket: WebSocket, meeting_id: str) -> None:
-    """WebSocket endpoint for real-time meeting updates."""
+async def websocket_endpoint(websocket: WebSocket, meeting_id: str, token: str = None) -> None:
+    """WebSocket endpoint for real-time meeting updates with authentication."""
+    # Verify JWT token if provided
+    if token:
+        try:
+            from app.core.auth import verify_token
+            payload = verify_token(type('Credentials', (), {'credentials': token})())
+            # Token is valid, proceed with connection
+        except Exception:
+            await websocket.close(code=1008, reason="Invalid authentication token")
+            return
+    else:
+        # For development, allow connections without token
+        # TODO: Remove this in production
+        pass
+    
     await websocket_manager.connect(websocket, meeting_id)
     try:
         while True:

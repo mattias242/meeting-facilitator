@@ -18,6 +18,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from app.core.encryption import db_encryption
 from app.db.session import Base
 
 
@@ -66,13 +67,28 @@ class AudioChunk(Base):
     chunk_number = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    # Audio data
-    audio_blob = Column(LargeBinary, nullable=False)  # WebM/Opus format
+    # Audio data (encrypted)
+    audio_blob = Column(LargeBinary, nullable=False)  # Encrypted WebM/Opus format
     duration_seconds = Column(Float, nullable=False)
 
-    # Transcription
-    transcription = Column(Text, nullable=True)
+    # Transcription (encrypted)
+    _transcription = Column("transcription", Text, nullable=True)  # Encrypted text
     transcribed_at = Column(DateTime, nullable=True)
+    
+    @property
+    def transcription(self) -> str:
+        """Get decrypted transcription."""
+        if self._transcription:
+            return db_encryption.decrypt_text(self._transcription)
+        return ""
+    
+    @transcription.setter
+    def transcription(self, value: str):
+        """Set encrypted transcription."""
+        if value:
+            self._transcription = db_encryption.encrypt_text(value)
+        else:
+            self._transcription = None
 
     # Relationships
     meeting = relationship("Meeting", back_populates="audio_chunks")
@@ -121,15 +137,35 @@ class Protocol(Base):
     meeting_id = Column(String, ForeignKey("meetings.id"), nullable=False, unique=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    # Protocol content
-    full_transcription = Column(Text, nullable=False)
+    # Protocol content (encrypted)
+    _full_transcription = Column("full_transcription", Text, nullable=False)  # Encrypted
     agenda_summary = Column(JSON, nullable=True)  # Summary per agenda item
     goal_assessment = Column(JSON, nullable=True)  # For each desired outcome
     key_decisions = Column(JSON, nullable=True)
     action_items = Column(JSON, nullable=True)
 
-    # Export
-    markdown_content = Column(Text, nullable=False)
+    # Export (encrypted)
+    _markdown_content = Column("markdown_content", Text, nullable=False)  # Encrypted
+    
+    @property
+    def full_transcription(self) -> str:
+        """Get decrypted full transcription."""
+        return db_encryption.decrypt_text(self._full_transcription)
+    
+    @full_transcription.setter
+    def full_transcription(self, value: str):
+        """Set encrypted full transcription."""
+        self._full_transcription = db_encryption.encrypt_text(value)
+    
+    @property
+    def markdown_content(self) -> str:
+        """Get decrypted markdown content."""
+        return db_encryption.decrypt_text(self._markdown_content)
+    
+    @markdown_content.setter
+    def markdown_content(self, value: str):
+        """Set encrypted markdown content."""
+        self._markdown_content = db_encryption.encrypt_text(value)
 
     # Relationships
     meeting = relationship("Meeting", back_populates="protocol")

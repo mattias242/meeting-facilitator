@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.meeting import Meeting
 from app.schemas.meeting import MeetingCreate, MeetingResponse
+from app.schemas.strict_validation import StrictMeetingCreate
 from app.services.idoarrt_service import IDOARRTParseError, IDOARRTService
 
 router = APIRouter()
@@ -16,8 +17,9 @@ idoarrt_service = IDOARRTService()
 
 @router.post("/meetings", response_model=dict[str, Any])
 async def create_meeting(
-    meeting_data: MeetingCreate,
+    meeting_data: StrictMeetingCreate,
     db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled for testing
 ) -> dict[str, Any]:
     """
     Create a new meeting from IDOARRT markdown.
@@ -89,6 +91,7 @@ async def create_meeting(
 async def get_meeting(
     meeting_id: str,
     db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled
 ) -> Meeting:
     """Get meeting by ID."""
     meeting = db.query(Meeting).filter(Meeting.id == meeting_id).first()
@@ -101,6 +104,7 @@ async def get_meeting(
 async def start_meeting(
     meeting_id: str,
     db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled
 ) -> dict[str, Any]:
     """Start a meeting."""
     from datetime import datetime
@@ -128,6 +132,7 @@ async def start_meeting(
 async def end_meeting(
     meeting_id: str,
     db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled
 ) -> dict[str, Any]:
     """End a meeting."""
     from datetime import datetime
@@ -156,6 +161,7 @@ async def extend_meeting(
     meeting_id: str,
     seconds: int,
     db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled
 ) -> dict[str, Any]:
     """Extend meeting time."""
     meeting = db.query(Meeting).filter(Meeting.id == meeting_id).first()

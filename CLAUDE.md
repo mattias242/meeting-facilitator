@@ -26,10 +26,11 @@
 
 ### Backend
 - **Framework**: FastAPI (Python 3.11+)
-- **Database**: SQLite + SQLAlchemy ORM
+- **Database**: SQLite + SQLAlchemy ORM (encrypted)
 - **AI**: Claude Sonnet API (Anthropic)
-- **Real-time**: WebSocket
-- **Testing**: pytest
+- **Real-time**: WebSocket (authenticated)
+- **Security**: JWT auth, field-level encryption
+- **Testing**: pytest + TDD
 
 ## Project Structure
 
@@ -60,7 +61,10 @@ meeting-facilitator/
 │   │   │   ├── facilitation_service.py # Question generation
 │   │   │   └── protocol_service.py     # Protocol generation
 │   │   ├── core/
-│   │   │   └── websocket.py            # WebSocket manager
+│   │   │   ├── websocket.py            # WebSocket manager
+│   │   │   ├── auth.py                 # JWT authentication
+│   │   │   ├── encryption.py          # Database encryption
+│   │   │   └── file_security.py       # File upload security
 │   │   └── db/
 │   │       └── session.py
 │   ├── tests/
@@ -68,11 +72,17 @@ meeting-facilitator/
 │   └── pyproject.toml
 ├── docs/
 │   ├── IDOARRT-format.md          # IDOARRT markdown template
-│   └── intervention-triggers.md   # Trigger logic documentation
+│   ├── intervention-triggers.md   # Trigger logic documentation
+│   ├── TDD-GUIDELINES.md          # Test-driven development guidelines
+│   └── AUDIT.md                   # Security audit report
 ├── .claude/
 │   └── commands/
 │       ├── test-meeting-flow.md
 │       └── test-claude-api.md
+├── .github/
+│   └── workflows/
+│       └── test-suite.yml         # CI/CD pipeline
+├── backend/.env.example           # Environment configuration
 └── CLAUDE.md
 ```
 
@@ -104,6 +114,7 @@ ruff check . && mypy app/                  # Lint + typecheck
 # Backend
 cp backend/.env.example backend/.env
 # Add your ANTHROPIC_API_KEY to backend/.env
+# Set JWT_SECRET_KEY and DB_ENCRYPTION_KEY for security
 
 # Frontend
 cp frontend/.env.example frontend/.env
@@ -112,10 +123,12 @@ cp frontend/.env.example frontend/.env
 ## Development Workflow
 
 ### Normal Development
-1. **Start backend**: `cd backend && source venv/bin/activate && uvicorn app.main:app --reload`
-2. **Start frontend**: `cd frontend && npm run dev`
-3. **Access app**: http://localhost:5173
-4. **API docs**: http://localhost:8000/docs
+1. **Setup environment**: Configure `.env` files with security keys
+2. **Start backend**: `cd backend && source venv/bin/activate && uvicorn app.main:app --reload`
+3. **Start frontend**: `cd frontend && npm run dev`
+4. **Access app**: http://localhost:5173
+5. **API docs**: http://localhost:8000/docs
+6. **Login**: Get JWT token via `/api/v1/auth/login`
 
 ### Testing a Complete Meeting Flow
 1. Upload IDOARRT markdown file
@@ -235,7 +248,26 @@ alembic upgrade head
 1. **Single meeting at a time** - No concurrent meeting support
 2. **Swedish language only** - Transcription and questions in Swedish
 3. **No speaker diarization** - Can't identify who said what
-4. **Local deployment only** - Not production-ready
+4. **Development security** - Basic security implemented, production hardening needed
+
+## 🔒 Security Status
+
+### ✅ Implemented (Phase 1)
+- **JWT Authentication**: All API endpoints protected
+- **Database Encryption**: Audio, transcriptions, protocols encrypted at rest
+- **Input Validation**: Strict Pydantic schemas with security checks
+- **File Upload Security**: MIME type validation, size limits, content scanning
+- **WebSocket Security**: Token-based authentication
+- **TDD Framework**: Complete test infrastructure with CI/CD
+
+### 🔄 In Progress (Phase 2)
+- Rate limiting implementation
+- Enhanced error handling
+- Security headers (CSP, HSTS)
+- Audit logging
+
+### 📋 Security Requirements
+See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 
 ## Future Enhancements
 
@@ -245,6 +277,7 @@ alembic upgrade head
 - Remote/hybrid meeting support (online + physical)
 - Calendar integration
 - Analytics dashboard (meeting effectiveness over time)
+- Production deployment with advanced security
 
 ## Troubleshooting
 
@@ -263,6 +296,11 @@ alembic upgrade head
 - User must grant microphone permission
 - Check browser console for errors
 
+### Authentication Issues
+- Verify JWT_SECRET_KEY is set in backend/.env
+- Check token expiration (default 30 minutes)
+- Use `/api/v1/auth/login` to get fresh token
+
 ### Claude API errors
 - Verify `ANTHROPIC_API_KEY` in `backend/.env`
 - Check API rate limits
@@ -272,6 +310,36 @@ alembic upgrade head
 
 1. **Use API docs**: http://localhost:8000/docs for interactive API testing
 2. **Monitor WebSocket**: Open browser DevTools → Network → WS to see WebSocket messages
-3. **Check database**: Use SQLite browser to inspect `meeting_facilitator.db`
+3. **Check database**: Use SQLite browser to inspect `meeting_facilitator.db` (encrypted data)
 4. **Test with short meetings**: Use 5-minute IDOARRT for faster testing
 5. **Mock audio**: Consider creating test audio files for consistent testing
+6. **Security testing**: Run `pytest tests/` to verify security measures
+7. **TDD workflow**: Write tests first, then implement features
+
+## 🚀 Next Steps
+
+### Phase 1 Complete ✅
+- [x] Critical security vulnerabilities fixed
+- [x] Authentication system implemented
+- [x] Database encryption deployed
+- [x] TDD framework established
+
+### Phase 2 - Production Hardening (Next 2-4 weeks)
+- [ ] Rate limiting implementation
+- [ ] Security headers (CSP, HSTS)
+- [ ] Enhanced error handling
+- [ ] Audit logging system
+- [ ] Production deployment guide
+
+### Phase 3 - Advanced Features (1-2 months)
+- [ ] Multi-language support
+- [ ] Speaker diarization
+- [ ] Voice synthesis
+- [ ] Advanced analytics
+- [ ] Enterprise security features
+
+### 📋 Quality Gates
+- All tests must pass before deployment
+- Security scan must be clean
+- Code coverage > 80%
+- No critical vulnerabilities

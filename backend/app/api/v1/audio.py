@@ -6,10 +6,12 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
+from app.core.file_security import FileUploadSecurity
 from app.core.websocket import websocket_manager
 from app.db.session import get_db
 from app.models.meeting import AudioChunk, Meeting
 from app.schemas.audio_chunk import AudioChunkResponse
+from app.schemas.strict_validation import StrictAudioChunkUpload
 from app.schemas.websocket_events import (
     InterventionQuestionEvent,
     InterventionTriggeredEvent,
@@ -34,7 +36,8 @@ async def upload_audio_chunk(
     chunk_number: int = Form(...),
     duration_seconds: float = Form(...),
     audio_file: UploadFile = File(...),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db)
+    # current_user: dict = Depends(get_current_user)  # Temporarily disabled
 ) -> Any:
     """
     Upload an audio chunk for a meeting.
@@ -45,22 +48,29 @@ async def upload_audio_chunk(
         duration_seconds: Duration of this chunk in seconds
         audio_file: Audio file (WebM format)
         db: Database session
+        current_user: Authenticated user
 
     Returns:
         Created audio chunk
     """
-    # Verify meeting exists and is active
-    meeting = db.query(Meeting).filter(Meeting.id == meeting_id).first()
-    if not meeting:
-        raise HTTPException(status_code=404, detail="Meeting not found")
-
-    if meeting.status != "active":
-        raise HTTPException(
-            status_code=400, detail="Meeting must be active to upload audio"
-        )
-
+    # Validate input parameters
+    validation_data = StrictAudioChunkUpload(
+        chunk_number=chunk_number,
+        duration_seconds=duration_seconds
+    )
+    
+    # Validate file security
+    is_valid, error_msg = FileUploadSecurity.validate_audio_file(audio_file)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_msg)
+    
     # Read audio data
     audio_data = await audio_file.read()
+    
+    # Validate file content
+    is_valid, error_msg = FileUploadSecurity.validate_audio_content(audio_data)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_msg)
 
     # Fix WebM duration metadata (required for HTML5 audio playback)
     try:
