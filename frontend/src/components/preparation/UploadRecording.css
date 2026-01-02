@@ -1,0 +1,87 @@
+.upload-recording {
+  background: #fff8dc;
+  border: 2px dashed #ffa500;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.upload-recording h3 {
+  margin-top: 0;
+  color: #ff8c00;
+}
+
+.upload-recording p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.upload-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.upload-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.upload-controls input[type="number"] {
+  width: 60px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.upload-btn {
+  padding: 0.75rem 1.5rem;
+  background: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background: #ff8c00;
+  transform: translateY(-2px);
+}
+
+.upload-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.progress-message {
+  background: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #0050b3;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  background: #fff1f0;
+  border: 1px solid #ffccc7;
+  color: #cf1322;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.upload-hint {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.upload-hint strong {
+  color: #ff8c00;
+}

@@ -4,7 +4,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import audio, meetings, protocols
-from app.core.websocket import WebSocketManager
+from app.core.websocket import websocket_manager
 from app.db.session import Base, engine
 
 # Create database tables
@@ -25,9 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# WebSocket manager
-ws_manager = WebSocketManager()
-
 # Include routers
 app.include_router(meetings.router, prefix="/api/v1", tags=["meetings"])
 app.include_router(audio.router, prefix="/api/v1", tags=["audio"])
@@ -43,7 +40,7 @@ async def root() -> dict[str, str]:
 @app.websocket("/ws/meetings/{meeting_id}")
 async def websocket_endpoint(websocket: WebSocket, meeting_id: str) -> None:
     """WebSocket endpoint for real-time meeting updates."""
-    await ws_manager.connect(websocket, meeting_id)
+    await websocket_manager.connect(websocket, meeting_id)
     try:
         while True:
             data = await websocket.receive_json()
@@ -55,4 +52,4 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str) -> None:
                 # Heartbeat
                 await websocket.send_json({"type": "pong", "timestamp": data.get("timestamp")})
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket, meeting_id)
+        websocket_manager.disconnect(websocket, meeting_id)

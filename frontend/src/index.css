@@ -1,30 +1,81 @@
+/* Global Theme Variables */
 :root {
+  /* Typography */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Light Mode Colors */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #fff;
+  --bg-tertiary: #f9fafb;
+  --text-primary: #1a1a1a;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
+  /* Status Colors */
+  --status-preparation: #fbbf24;
+  --status-preparation-text: #1a1a1a;
+  --status-active: #10b981;
+  --status-active-text: #fff;
+  --status-completed: #6b7280;
+  --status-completed-text: #fff;
+
+  /* Button Colors */
+  --btn-primary: #3b82f6;
+  --btn-primary-hover: #2563eb;
+  --btn-success: #10b981;
+  --btn-success-hover: #059669;
+  --btn-warning: #f59e0b;
+  --btn-warning-hover: #d97706;
+  --btn-secondary: #6b7280;
+  --btn-secondary-hover: #4b5563;
+  --btn-danger: #ef4444;
+  --btn-danger-hover: #dc2626;
+
+  /* Semantic Colors */
+  --color-error: #ef4444;
+  --color-error-bg: #fee2e2;
+  --color-error-text: #991b1b;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+
+  /* Font Rendering */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Dark Mode Theme */
+.dark-mode {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #9e9e9e;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Global Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Body and Root */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   min-width: 320px;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -35,5 +86,117 @@ body {
 .app {
   width: 100%;
   min-height: 100vh;
-  padding: 2rem;
+}
+
+/* Global Button Styles */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--btn-primary);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+}
+
+.btn-success {
+  background: var(--btn-success);
+  color: #fff;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: var(--btn-success-hover);
+}
+
+.btn-warning {
+  background: var(--btn-warning);
+  color: #fff;
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: var(--btn-warning-hover);
+}
+
+.btn-secondary {
+  background: var(--btn-secondary);
+  color: #fff;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--btn-secondary-hover);
+}
+
+.btn-danger {
+  background: var(--btn-danger);
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--btn-danger-hover);
+}
+
+/* Global Card Styles */
+.card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+/* Global Error/Success Messages */
+.error-message {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--color-error);
+  margin: 1rem 0;
+}
+
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--color-success);
+  margin: 1rem 0;
+}
+
+/* Loading/Error States */
+.loading, .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.25rem;
+}
+
+.loading {
+  color: var(--text-tertiary);
+}
+
+.error {
+  color: var(--color-error);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 767px) {
+  .app {
+    padding: 0;
+  }
 }

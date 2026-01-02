@@ -1,0 +1,413 @@
+/* Mobile-first Live Meeting View */
+:root {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #fff;
+  --bg-tertiary: #f9fafb;
+  --text-primary: #1a1a1a;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #9e9e9e;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.live-meeting-view {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 0;
+}
+
+/* Header */
+.meeting-header {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.meeting-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.meeting-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.status-badge.preparation {
+  background: #fbbf24;
+  color: #1a1a1a;
+}
+
+.status-badge.active {
+  background: #10b981;
+  color: #fff;
+}
+
+.status-badge.completed {
+  background: #6b7280;
+  color: #fff;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Countdown Timer */
+.countdown-timer {
+  background: var(--bg-secondary);
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.timer-display {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.timer-time {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.timer-time.overtime {
+  color: #ef4444;
+}
+
+.timer-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.timer-progress {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.timer-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+  transition: width 0.3s ease;
+}
+
+.timer-progress-bar.warning {
+  background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+}
+
+.timer-progress-bar.overtime {
+  background: #ef4444;
+}
+
+/* Meeting Info */
+.meeting-info {
+  background: var(--bg-secondary);
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.meeting-info h2 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.meeting-info h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.meeting-info p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.meeting-info ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.meeting-info li {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+/* Recording Section */
+.recording-section {
+  background: var(--bg-secondary);
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.recording-section h2 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.recording-status {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.status-item strong {
+  color: var(--text-primary);
+}
+
+/* Buttons */
+.recording-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recording-controls button {
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-success {
+  background: #10b981;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-warning {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.btn-warning:hover {
+  background: #d97706;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* Test Mode Info */
+.test-mode-info {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--btn-primary) 0%, var(--btn-success) 100%);
+  transition: width 0.3s ease;
+}
+
+/* Transcriptions */
+.transcriptions-section {
+  background: var(--bg-secondary);
+  margin: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.transcriptions-section h3 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.transcription-item {
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #3b82f6;
+}
+
+.transcription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+.transcription-text {
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Error Messages */
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border-left: 4px solid #ef4444;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.25rem;
+  color: #6b7280;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.25rem;
+  color: #ef4444;
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .live-meeting-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .meeting-header {
+    grid-column: 1 / -1;
+    border-radius: 12px;
+    position: static;
+  }
+
+  .countdown-timer {
+    margin: 0;
+  }
+
+  .meeting-info {
+    margin: 0;
+  }
+
+  .recording-section {
+    margin: 0;
+    grid-column: 1 / -1;
+  }
+
+  .transcriptions-section {
+    margin: 0;
+    grid-column: 1 / -1;
+  }
+
+  .recording-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .recording-controls button {
+    flex: 1;
+    min-width: 150px;
+  }
+}

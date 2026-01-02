@@ -1,0 +1,179 @@
+/* Test Mode Upload Component */
+.test-mode-upload {
+  margin: 1rem;
+}
+
+.test-mode-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.test-mode-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+/* Upload Zone */
+.test-upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg-tertiary);
+}
+
+.test-upload-zone:hover {
+  border-color: var(--btn-primary);
+  background: var(--bg-secondary);
+}
+
+.test-upload-zone.drag-active {
+  border-color: var(--btn-primary);
+  background: var(--bg-secondary);
+  transform: scale(1.01);
+}
+
+.test-upload-zone.has-file {
+  border-color: var(--color-success);
+  background: var(--bg-secondary);
+}
+
+/* Upload Content */
+.test-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.upload-icon,
+.file-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--btn-primary);
+}
+
+.file-icon {
+  color: var(--color-success);
+}
+
+.upload-text {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.upload-hint,
+.file-hint {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.file-name {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.file-size {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Test Settings */
+.test-settings {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.setting-label {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.setting-input {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.setting-input:focus {
+  outline: none;
+  border-color: var(--btn-primary);
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .test-mode-upload {
+    margin: 0 0 2rem 0;
+  }
+
+  .test-mode-title {
+    font-size: 1.25rem;
+  }
+
+  .test-mode-description {
+    font-size: 1rem;
+  }
+
+  .test-upload-zone {
+    padding: 2.5rem 2rem;
+  }
+
+  .upload-icon,
+  .file-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .upload-text {
+    font-size: 1rem;
+  }
+
+  .upload-hint,
+  .file-hint {
+    font-size: 0.875rem;
+  }
+
+  .file-name {
+    font-size: 1rem;
+  }
+
+  .file-size {
+    font-size: 0.875rem;
+  }
+
+  .setting-label {
+    font-size: 1rem;
+  }
+
+  .setting-input {
+    width: 100px;
+    font-size: 1rem;
+  }
+}

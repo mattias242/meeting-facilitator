@@ -2,12 +2,18 @@ import { useState } from 'react'
 import IDOARRTUpload from '../components/preparation/IDOARRTUpload'
 import IDOARRTPreview from '../components/preparation/IDOARRTPreview'
 import ValidationErrors from '../components/preparation/ValidationErrors'
+import TestModeUpload from '../components/preparation/TestModeUpload'
+import { useDarkMode } from '../hooks/useDarkMode'
 import { meetingApi } from '../services/api'
 import { CreateMeetingResponse } from '../types/meeting'
+import './PreparationView.css'
 
 export default function PreparationView() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<CreateMeetingResponse | null>(null)
+  const [testAudioFile, setTestAudioFile] = useState<File | null>(null)
+  const [testChunkDuration, setTestChunkDuration] = useState(2)
+  const { isDark, toggle: toggleDarkMode } = useDarkMode()
 
   const handleFileSelect = async (content: string) => {
     setIsLoading(true)
@@ -31,10 +37,15 @@ export default function PreparationView() {
   return (
     <div className="preparation-view">
       <header className="view-header">
-        <h1>Förbered Möte</h1>
-        <p className="view-description">
-          Ladda upp din IDOARRT markdown-fil för att skapa och validera ett nytt möte.
-        </p>
+        <div>
+          <h1>Förbered Möte</h1>
+          <p className="view-description">
+            Ladda upp din IDOARRT markdown-fil för att skapa och validera ett nytt möte.
+          </p>
+        </div>
+        <button className="theme-toggle" onClick={toggleDarkMode} aria-label="Toggle dark mode">
+          {isDark ? '☀️' : '🌙'}
+        </button>
       </header>
 
       <IDOARRTUpload onFileSelect={handleFileSelect} isLoading={isLoading} />
@@ -44,40 +55,22 @@ export default function PreparationView() {
       )}
 
       {result && result.success && result.parsed_idoarrt && (
-        <IDOARRTPreview
-          data={result.parsed_idoarrt}
-          meeting={result.meeting}
-        />
+        <>
+          <TestModeUpload
+            onAudioFileSelect={setTestAudioFile}
+            audioFile={testAudioFile}
+            chunkDurationMinutes={testChunkDuration}
+            onChunkDurationChange={setTestChunkDuration}
+          />
+
+          <IDOARRTPreview
+            data={result.parsed_idoarrt}
+            meeting={result.meeting}
+            testAudioFile={testAudioFile}
+            testChunkDuration={testChunkDuration}
+          />
+        </>
       )}
-
-      <style>{`
-        .preparation-view {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 2rem;
-        }
-
-        .view-header {
-          text-align: center;
-          margin-bottom: 3rem;
-        }
-
-        .view-header h1 {
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin: 0 0 1rem 0;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .view-description {
-          font-size: 1.125rem;
-          color: #a0aec0;
-          margin: 0;
-        }
-      `}</style>
     </div>
   )
 }

@@ -33,6 +33,17 @@ export const audioApi = {
     api.post(`/api/v1/meetings/${meetingId}/audio-chunks`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+
+  listChunks: (meetingId: string) =>
+    api.get(`/api/v1/meetings/${meetingId}/audio-chunks`),
+
+  getChunkAudioUrl: (chunkId: string) =>
+    `${API_BASE_URL}/api/v1/audio-chunks/${chunkId}/audio`,
+
+  uploadRecording: (meetingId: string, formData: FormData) =>
+    api.post(`/api/v1/meetings/${meetingId}/upload-recording`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 }
 
 // Protocol API

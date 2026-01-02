@@ -1,21 +1,49 @@
 import { useNavigate } from 'react-router-dom'
 import { IDOARRTData, Meeting } from '../../types/meeting'
+import UploadRecording from './UploadRecording'
+import './IDOARRTPreview.css'
 
 interface IDOARRTPreviewProps {
   data: IDOARRTData
   meeting?: Meeting
   onStartMeeting?: () => void
+  onRecordingUploaded?: () => void
+  testAudioFile?: File | null
+  testChunkDuration?: number
 }
 
-export default function IDOARRTPreview({ data, meeting, onStartMeeting }: IDOARRTPreviewProps) {
+export default function IDOARRTPreview({
+  data,
+  meeting,
+  onStartMeeting,
+  onRecordingUploaded,
+  testAudioFile,
+  testChunkDuration
+}: IDOARRTPreviewProps) {
   const navigate = useNavigate()
 
   const handleStartMeeting = () => {
     if (meeting) {
-      navigate(`/meeting/${meeting.id}`)
+      // Pass test mode data via navigation state
+      navigate(`/meeting/${meeting.id}`, {
+        state: {
+          testMode: testAudioFile ? {
+            audioFile: testAudioFile,
+            chunkDuration: testChunkDuration || 2
+          } : null
+        }
+      })
     } else if (onStartMeeting) {
       onStartMeeting()
     }
+  }
+
+  const handleRecordingUpload = () => {
+    if (meeting) {
+      // Navigate to the completed meeting view
+      navigate(`/meeting/${meeting.id}`)
+    }
+    onRecordingUploaded?.()
   }
 
   return (
@@ -90,173 +118,19 @@ export default function IDOARRTPreview({ data, meeting, onStartMeeting }: IDOARR
       </div>
 
       {meeting && (
-        <div className="preview-actions">
-          <button className="start-button" onClick={handleStartMeeting}>
-            Starta Möte
-          </button>
-        </div>
+        <>
+          <div className="preview-actions">
+            <button className="btn-primary start-button" onClick={handleStartMeeting}>
+              {testAudioFile ? '🧪 Starta Test-Möte' : 'Starta Möte'}
+            </button>
+          </div>
+
+          <UploadRecording
+            meetingId={meeting.id}
+            onUploadComplete={handleRecordingUpload}
+          />
+        </>
       )}
-
-      <style>{`
-        .idoarrt-preview {
-          background-color: #2d3748;
-          border-radius: 8px;
-          padding: 2rem;
-          margin: 1.5rem 0;
-        }
-
-        .preview-header {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin-bottom: 2rem;
-          padding-bottom: 1rem;
-          border-bottom: 2px solid #4a5568;
-        }
-
-        .check-icon {
-          width: 32px;
-          height: 32px;
-          color: #48bb78;
-          flex-shrink: 0;
-        }
-
-        .preview-header h2 {
-          margin: 0;
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #48bb78;
-        }
-
-        .preview-section {
-          margin-bottom: 2rem;
-        }
-
-        .preview-section h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: #63b3ed;
-        }
-
-        .intent-text {
-          margin: 0;
-          font-size: 1rem;
-          line-height: 1.6;
-          color: #e2e8f0;
-          background-color: #1a202c;
-          padding: 1rem;
-          border-radius: 4px;
-        }
-
-        .outcomes-list,
-        .rules-list {
-          margin: 0;
-          padding-left: 1.5rem;
-          list-style: disc;
-        }
-
-        .outcomes-list li,
-        .rules-list li {
-          margin: 0.5rem 0;
-          color: #e2e8f0;
-          line-height: 1.6;
-        }
-
-        .agenda-table {
-          background-color: #1a202c;
-          border-radius: 4px;
-          overflow: hidden;
-        }
-
-        .agenda-item,
-        .agenda-total {
-          display: grid;
-          grid-template-columns: 2rem 1fr auto;
-          gap: 1rem;
-          padding: 0.75rem 1rem;
-          border-bottom: 1px solid #2d3748;
-          align-items: center;
-        }
-
-        .agenda-item:last-of-type {
-          border-bottom: 2px solid #4a5568;
-        }
-
-        .agenda-total {
-          border-bottom: none;
-          font-weight: 600;
-          background-color: #2d3748;
-        }
-
-        .agenda-number {
-          color: #a0aec0;
-          font-weight: 500;
-        }
-
-        .agenda-topic {
-          color: #e2e8f0;
-        }
-
-        .agenda-time {
-          color: #63b3ed;
-          font-weight: 500;
-          text-align: right;
-        }
-
-        .roles-list {
-          display: grid;
-          gap: 0.75rem;
-        }
-
-        .role-item {
-          display: flex;
-          gap: 0.75rem;
-          padding: 0.75rem 1rem;
-          background-color: #1a202c;
-          border-radius: 4px;
-        }
-
-        .role-name {
-          color: #63b3ed;
-          font-weight: 500;
-          min-width: 120px;
-        }
-
-        .role-person {
-          color: #e2e8f0;
-        }
-
-        .preview-actions {
-          margin-top: 2rem;
-          padding-top: 1.5rem;
-          border-top: 2px solid #4a5568;
-          display: flex;
-          justify-content: center;
-        }
-
-        .start-button {
-          padding: 1rem 2rem;
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: white;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .start-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .start-button:active {
-          transform: translateY(0);
-        }
-      `}</style>
     </div>
   )
 }

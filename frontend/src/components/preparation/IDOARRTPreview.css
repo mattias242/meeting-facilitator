@@ -1,0 +1,191 @@
+/* IDOARRT Preview Component */
+.idoarrt-preview {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem;
+  box-shadow: var(--shadow);
+}
+
+/* Preview Header */
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.check-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.preview-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+/* Preview Sections */
+.preview-section {
+  margin-bottom: 2rem;
+}
+
+.preview-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--btn-primary);
+}
+
+/* Intent Text */
+.intent-text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* Lists */
+.outcomes-list,
+.rules-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.outcomes-list li,
+.rules-list li {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.875rem;
+}
+
+/* Agenda Table */
+.agenda-table {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.agenda-item,
+.agenda-total {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  align-items: center;
+}
+
+.agenda-item:last-of-type {
+  border-bottom: 2px solid var(--border-color);
+}
+
+.agenda-total {
+  border-bottom: none;
+  font-weight: 600;
+  background: var(--bg-secondary);
+}
+
+.agenda-number {
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.agenda-topic {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.agenda-time {
+  color: var(--btn-primary);
+  font-weight: 500;
+  text-align: right;
+  font-size: 0.875rem;
+}
+
+/* Roles List */
+.roles-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.role-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+}
+
+.role-name {
+  color: var(--btn-primary);
+  font-weight: 500;
+  min-width: 100px;
+  font-size: 0.875rem;
+}
+
+.role-person {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+/* Preview Actions */
+.preview-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}
+
+.start-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .idoarrt-preview {
+    padding: 2rem;
+    margin: 0 0 2rem 0;
+  }
+
+  .preview-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .preview-section h3 {
+    font-size: 1.125rem;
+  }
+
+  .intent-text,
+  .agenda-number,
+  .agenda-topic,
+  .agenda-time,
+  .outcomes-list li,
+  .rules-list li,
+  .role-name,
+  .role-person {
+    font-size: 1rem;
+  }
+
+  .start-button {
+    font-size: 1.125rem;
+  }
+
+  .role-name {
+    min-width: 120px;
+  }
+}
