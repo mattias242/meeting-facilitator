@@ -122,28 +122,28 @@ cp frontend/.env.example frontend/.env
 
 ## Development Workflow
 
-### Git Workflow (Trunk-Based Development)
+### Git Workflow (Pure Trunk-Based Development)
 ```
-main (trunk) ────────────────────────┐
-                                      │
-feature/security-hardening ──────────┘
+main (trunk) ── Direct commits only
 ```
 
-**Branch Strategy**:
-- **main**: Always production-ready, short-lived branches
-- **feature/***: Feature branches merged frequently
-- **No long-lived branches**: Everything merges back to main quickly
+**Pure Trunk-Based Strategy**:
+- **main**: All work happens directly in main
+- **No branches**: No feature branches, no long-lived branches
+- **Direct commits**: All changes go straight to main
+- **Continuous integration**: Every commit tested immediately
+- **Always production-ready**: Main is always deployable
 
 ### Normal Development
 1. **Setup environment**: Configure `.env` files with security keys
-2. **Create feature branch**: `git checkout -b feature/your-feature`
+2. **Work directly in main**: Stay on main branch always
 3. **Start backend**: `cd backend && source venv/bin/activate && uvicorn app.main:app --reload`
 4. **Start frontend**: `cd frontend && npm run dev`
 5. **Access app**: http://localhost:5173
 6. **API docs**: http://localhost:8000/docs
 7. **Login**: Get JWT token via `/api/v1/auth/login`
 8. **Test frequently**: Run TDD tests before commits
-9. **Merge to main**: Small, frequent merges
+9. **Commit directly to main**: Small, frequent commits
 
 ### Testing Commands
 ```bash
@@ -163,6 +163,21 @@ npm run test:coverage           # With coverage
 pytest tests/test_services/test_idoarrt_service.py::TestIDOARRTService::test_parse_valid_idoarrt_success -v
 ```
 
+### Git Commands
+```bash
+# Always stay on main
+git checkout main
+
+# Commit directly to main
+git add .
+git commit -m "feat: Add feature with tests"
+
+# Push to main
+git push origin main
+
+# No branch management needed
+```
+
 ### Testing a Complete Meeting Flow
 1. Upload IDOARRT markdown file
 2. Start meeting
@@ -171,23 +186,12 @@ pytest tests/test_services/test_idoarrt_service.py::TestIDOARRTService::test_par
 5. End meeting
 6. Review protocol
 
-### Branch Management
-```bash
-# List branches
-git branch -a
-
-# Switch to feature branch
-git checkout feature/security-hardening
-
-# Sync with main
-git checkout main
-git pull origin main
-git checkout feature/security-hardening
-git merge main
-
-# Delete merged branches
-git branch -d feature/completed-feature
-```
+### Pure Trunk-Based Principles
+- **Small commits**: Commit frequently with small changes
+- **Test before commit**: Run tests to ensure main stays green
+- **No branches**: All work in main branch
+- **Continuous integration**: Every commit validated
+- **Always deployable**: Main is always production-ready
 
 ## Key Concepts
 
@@ -374,7 +378,7 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [x] Authentication system implemented
 - [x] Database encryption deployed
 - [x] TDD framework established
-- [x] Trunk-based development workflow
+- [x] Pure trunk-based development workflow
 
 ### Phase 2 - Production Hardening (Next 2-4 weeks)
 - [ ] Rate limiting implementation
@@ -390,15 +394,16 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 - [ ] Advanced analytics
 - [ ] Enterprise security features
 
-### 🌲 Git Workflow
-- **Main branch**: Always production-ready
-- **Feature branches**: Short-lived, frequently merged
-- **TDD integration**: Tests before features
-- **Continuous integration**: Automated testing on push
+### 🌲 Pure Trunk-Based Workflow
+- **Main branch only**: All work happens in main
+- **No feature branches**: Direct commits only
+- **TDD integration**: Tests before every commit
+- **Continuous integration**: Automated testing on every push
+- **Always deployable**: Main is always production-ready
 
 ### 📋 Quality Gates
-- All tests must pass before merge to main
+- All tests must pass before every commit
 - Security scan must be clean
 - Code coverage > 80%
 - No critical vulnerabilities
-- Trunk-based: No long-lived branches
+- Pure trunk-based: No branches, direct commits only
