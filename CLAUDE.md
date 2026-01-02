@@ -346,29 +346,52 @@ alembic upgrade head
 
 ## Known Limitations
 
+### Functional Limitations
 1. **Single meeting at a time** - No concurrent meeting support
 2. **Swedish language only** - Transcription and questions in Swedish
 3. **No speaker diarization** - Can't identify who said what
-4. **Development security** - Basic security implemented, production hardening needed
+
+### Security Limitations (CRITICAL)
+4. **No active authentication** - All API endpoints are open (auth framework exists but disabled)
+5. **No user system** - Login accepts any credentials
+6. **Audio not encrypted** - Largest data asset stored in cleartext
+7. **Hardcoded secrets** - Default JWT and encryption keys in source code
+8. **No rate limiting** - Vulnerable to DoS and cost explosion
+9. **Frontend lacks auth** - No token handling implemented
+10. **Development only** - **NOT suitable for production or sensitive data**
+
+**IMPORTANT**: Se [AUDIT.md](AUDIT.md) för fullständig lista av 12 kritiska och 8 medelhöga särbarheter.
 
 ## 🔒 Security Status
 
-### ✅ Implemented (Phase 1)
-- **JWT Authentication**: All API endpoints protected
-- **Database Encryption**: Audio, transcriptions, protocols encrypted at rest
-- **Input Validation**: Strict Pydantic schemas with security checks
-- **File Upload Security**: MIME type validation, size limits, content scanning
-- **WebSocket Security**: Token-based authentication
-- **TDD Framework**: Complete test infrastructure with CI/CD
+**IMPORTANT**: Systemet är INTE production-ready. Se [AUDIT.md](AUDIT.md) för fullständig säkerhetsanalys.
 
-### 🔄 In Progress (Phase 2)
-- Rate limiting implementation
-- Enhanced error handling
-- Security headers (CSP, HSTS)
-- Audit logging
+### ✅ Implemented & Active
+- **File Upload Security**: MIME type validation, size limits, content scanning (`app/core/file_security.py`)
+- **Input Validation**: Strict Pydantic schemas with security checks (`StrictMeetingCreate`, `StrictAudioChunkUpload`)
+- **Partial Database Encryption**: Transcriptions och protocols encrypted (audio blobs ej encrypted)
+- **TDD Framework**: Complete test infrastructure
 
-### 📋 Security Requirements
-See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
+### ⚠️ Implemented but DISABLED
+- **JWT Authentication Framework**: Kod finns men **kommenterad ut** på alla endpoints
+- **WebSocket Token Validation**: Kod finns men **bypassed för development**
+- **User Authentication**: Login endpoint accepterar **vilka credentials som helst**
+
+### 🚨 Critical Security Issues
+**12 kritiska sårbarheter** identifierade i [AUDIT.md](AUDIT.md):
+1. **Ingen aktiv authentication** - Alla endpoints öppna
+2. **Audio blobs okrypterade** - Största data-asset i klartext
+3. **Hardcoded secrets** - JWT secret och encryption key i källkod
+4. **Ingen authorization** - User ownership checks saknas
+5. **Ingen rate limiting** - DoS och cost explosion risk
+6. **Frontend utan auth** - Inga auth headers implementerade
+
+### 📋 Security Roadmap
+- **Phase 1 (Vecka 1-2)**: Aktivera & fixa authentication, kryptera audio, fixa hardcoded secrets
+- **Phase 2 (Vecka 3-4)**: Rate limiting, audit logging, error handling
+- **Phase 3 (Vecka 5-8)**: Security headers, session management, data retention
+
+**Fullständig analys**: Se [AUDIT.md](AUDIT.md) för detaljerad säkerhetsaudit och åtgärdsplan.
 
 ## Future Enhancements
 
@@ -417,30 +440,72 @@ See [AUDIT.md](AUDIT.md) for complete security analysis and roadmap.
 6. **Security testing**: Run `pytest tests/` to verify security measures
 7. **TDD workflow**: Write tests first, then implement features
 
-## 🚀 Next Steps
+## 🚀 Next Steps & Roadmap
 
-### Phase 1 Complete ✅
-- [x] Critical security vulnerabilities fixed
-- [x] Authentication system implemented
-- [x] Database encryption deployed
+**Current Status**: Development/testing only - NOT production-ready
+
+### Phase 0 Complete ✅ (Foundation)
+- [x] Core application structure
+- [x] IDOARRT parser and validation
+- [x] Audio recording and transcription
+- [x] WebSocket real-time communication
+- [x] Input validation framework
+- [x] File upload security
 - [x] TDD framework established
 - [x] Pure trunk-based development workflow
+- [x] Logging infrastructure
 
-### Phase 2 - Production Hardening (Next 2-4 weeks)
-- [ ] Rate limiting implementation
-- [ ] Security headers (CSP, HSTS)
-- [ ] Enhanced error handling
-- [ ] Audit logging system
-- [ ] Production deployment guide
-- [ ] Log service integration (cloud logging)
-- [ ] Log rotation and retention policies
+### Phase 1 - Critical Security (NEXT - Vecka 1-2) 🚨
+**Status**: BLOCKING för production deployment
 
-### Phase 3 - Advanced Features (1-2 months)
+- [ ] **Aktivera authentication på alla endpoints** (ta bort comments)
+- [ ] **Implementera proper user authentication** (bcrypt password hashing)
+- [ ] **Skapa user database model** med ownership
+- [ ] **Lägg till authorization checks** (user owns resource)
+- [ ] **Kryptera audio blobs** (property-based encryption)
+- [ ] **Fixa hardcoded secrets** (kräv environment variables)
+- [ ] **Aktivera WebSocket authentication** (ta bort dev bypass)
+- [ ] **Implementera frontend auth** (login, token storage, headers)
+- [ ] **Auth test coverage** > 95%
+
+**Exit Criteria**:
+- ✅ Alla endpoints kräver authentication
+- ✅ All känslig data encrypted (audio + text)
+- ✅ Inga hardcoded secrets i kod
+- ✅ Security scan: 0 critical, 0 high vulnerabilities
+
+### Phase 2 - Production Hardening (Vecka 3-4)
+- [ ] Rate limiting implementation (FastAPI-Limiter)
+- [ ] Audit logging för security events
+- [ ] Error handling (generic messages i production)
+- [ ] UUID validation för alla ID parameters
+- [ ] Security headers (CSP, HSTS, X-Frame-Options)
+- [ ] CORS tightening (explicit allow lists)
+
+**Exit Criteria**:
+- ✅ Rate limiting aktivt
+- ✅ Audit logs för alla security events
+- ✅ Error messages inte exponerar internals
+
+### Phase 3 - Enterprise Features (Vecka 5-8)
+- [ ] Session management (token revocation, logout)
+- [ ] Data retention policy (auto-cleanup)
+- [ ] Database file encryption (SQLCipher)
 - [ ] Multi-language support
 - [ ] Speaker diarization
-- [ ] Voice synthesis
-- [ ] Advanced analytics
-- [ ] Enterprise security features
+- [ ] Log service integration (cloud logging)
+- [ ] Penetration testing
+
+**Exit Criteria**:
+- ✅ GDPR compliance uppnådd
+- ✅ Penetration test passed
+- ✅ Production deployment guide complete
+
+### Phase 4 - Advanced Features (Månad 3+)
+- [ ] Voice synthesis for assistant questions
+- [ ] Remote/hybrid meeting support
+- [ ] Calendar integration
+- [ ] Analytics dashboard
 - [ ] Centralized log management
 - [ ] Real-time log monitoring dashboard
 
