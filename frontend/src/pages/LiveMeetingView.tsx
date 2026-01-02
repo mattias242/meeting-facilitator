@@ -42,7 +42,7 @@ export default function LiveMeetingView() {
 
       try {
         const formData = new FormData()
-        formData.append('audio_file', blob, `chunk-${chunkNumber}.webm`)
+        formData.append('audio_file', blob, `chunk-${chunkNumber}.wav`)
         formData.append('chunk_number', chunkNumber.toString())
         formData.append('duration_seconds', durationSeconds.toString())
 

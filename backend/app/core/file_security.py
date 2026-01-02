@@ -14,6 +14,7 @@ class FileUploadSecurity:
         'audio/webm',
         'audio/ogg',
         'audio/wav',
+        'audio/x-wav',  # python-magic reports WAV as audio/x-wav
         'audio/mp3',
         'audio/mpeg',
         'audio/m4a'
